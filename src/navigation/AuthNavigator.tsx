@@ -5,9 +5,7 @@ import {
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import { authScreens } from "../constants/screenNames";
 import { colors } from "../theme/colors";
-// import SignInScreen from "../screens/auth/SignInScreen";
-// import RecoverScreen from "../screens/auth/RecoverScreen";
-// import SignUpScreen from "../screens/auth/SignUpScreen";
+import SignUpScreen from "../screens/auth/SignUpScreen";
 
 interface RootStackParamList {
   [key: string]: undefined; // Screen names
@@ -25,18 +23,18 @@ export function AuthStack() {
         headerStyle: { backgroundColor: colors.PURPLE },
         headerTitle: "",
         headerShown: false,
+        headerTintColor:'#fff'
       }}
     >
       <Stack.Screen
         name={authScreens.WelcomeScreen}
         component={WelcomeScreen}
       />
-      {/* <Stack.Screen name={authScreens.SignInScreen} component={SignInScreen} />
       <Stack.Screen
-        name={authScreens.RecoverScreen}
-        component={RecoverScreen}
+        options={{ headerShown: true }}
+        name={authScreens.SignUpScreen}
+        component={SignUpScreen}
       />
-      <Stack.Screen name={authScreens.SignUpScreen} component={SignUpScreen} /> */}
     </Stack.Navigator>
   );
 }

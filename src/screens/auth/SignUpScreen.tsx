@@ -1,25 +1,24 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { authScreens } from "../../constants/screenNames";
+import { StyleSheet, View } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import SimpleButton from "../../components/SimpleButton";
-import { useLogin } from "../../hooks/auth/useLogin";
+import { authScreens } from "../../constants/screenNames";
+import { useSignUp } from "../../hooks/auth/useSignUp";
 import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { fontStyles } from "../../theme/fonts";
 
-const WelcomeScreen = (props: StackComponentProps) => {
+const SignUpScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
 
   const navigate = (name: keyof typeof authScreens) =>
     navigation.navigate(authScreens[name]);
 
   const onRegister = () => navigate("SignUpScreen");
-  const { values, setValue, errors, touched, onSubmit, state } = useLogin({});
+  const { values, setValue, errors, touched, onSubmit } = useSignUp({});
 
   return (
     <View style={sxContainer}>
       <View style={sxContentContainer}>
-        <Text style={sxText}>{`Welcome to My\nBasic Chat App`}</Text>
         <View style={sxBodyContent}>
           <CustomInput
             label="Email"
@@ -30,25 +29,25 @@ const WelcomeScreen = (props: StackComponentProps) => {
             errorText={errors.email && errors.email}
             error={touched.email && Boolean(errors.email)}
             marginVertical={10}
-            disabled={state === "submit"}
+            // disabled={loginState === "submit"}
           />
           <CustomInput
             label="Contraseña"
             value={values.pass}
             onChangeText={(txt) => setValue("pass", txt)}
-            secureTextEntry
+            // secureTextEntry
             autoCapitalize="none"
             errorText={errors.pass && errors.pass}
             error={touched.pass && Boolean(errors.pass)}
             marginVertical={10}
-            disabled={state === "submit"}
+            // disabled={loginState === "submit"}
             hidePassEye
           />
-          <SimpleButton text="Ingresar" onPress={onSubmit} />
           <SimpleButton
-            text="Regístrate aquí"
-            onPress={onRegister}
+            text="Registrarse"
+            onPress={onSubmit}
             variant="outlined"
+            hideIcon
           />
         </View>
       </View>
@@ -56,7 +55,7 @@ const WelcomeScreen = (props: StackComponentProps) => {
   );
 };
 
-export default WelcomeScreen;
+export default SignUpScreen;
 
 const { sxContainer, sxContentContainer, sxText, sxBodyContent } =
   StyleSheet.create({

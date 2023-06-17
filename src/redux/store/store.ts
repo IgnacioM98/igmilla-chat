@@ -1,20 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TypedUseSelectorHook } from "react-redux/es/types";
-// import authReducer from "../features/auth/authSlice";
-// import navHelpReducer from "../features/navhelp/navhelpSlice";
-// import locationsReducer from "../features/locations/locationsSlice";
-// import profileReducer from "../features/profile/profileSlice";
-// import addressReducer from '../features/addresses/addressSlice'
+import authReducer from "../features/auth/authSlice";
 
 const configureAppStore = () => {
   const store = configureStore({
     reducer: {
-      // auth: authReducer,
-      // navhelp: navHelpReducer,
-      // locations: locationsReducer,
-      // profile: profileReducer,
-      // address: addressReducer
+      auth: authReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
