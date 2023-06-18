@@ -5,9 +5,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { useAppInit } from "./src/hooks/useAppInit";
 import { AuthStack } from "./src/navigation/AuthNavigator";
-import store from "./src/redux/store/store";
-
+import store, { useAppSelector } from "./src/redux/store/store";
 import "react-native-gesture-handler";
+import { authSelector } from "./src/redux/features/auth/authSlice";
+import { MainDrawer } from "./src/navigation/MainNavigation";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
 }
 
 function AppMain() {
-  // const { authState } = useAppSelector(authSelector);
+  const { authState } = useAppSelector(authSelector);
 
   const { appReady } = useAppInit({});
   if (!appReady) return null;
@@ -28,8 +29,7 @@ function AppMain() {
   return (
     <NavigationContainer>
       <StatusBar style="light" />
-      <AuthStack />
-      {/* {authState === "Unauthenticated" ? <AuthStack /> : <MainDrawer />} */}
+      {authState === "Unauthenticated" ? <AuthStack /> : <MainDrawer />}
     </NavigationContainer>
   );
 }

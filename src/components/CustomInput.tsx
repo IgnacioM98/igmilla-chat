@@ -26,6 +26,7 @@ interface CustomProps {
   disabled?: boolean;
   isDate?: boolean;
   hidePassEye?: boolean;
+  inputContainerStyle?: StyleProp<ViewStyle>;
 }
 const CustomInput: FC<CustomProps & TextInputProps> = ({
   value,
@@ -40,6 +41,7 @@ const CustomInput: FC<CustomProps & TextInputProps> = ({
   isDate = false,
   secureTextEntry,
   hidePassEye = false,
+  inputContainerStyle = {},
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -82,10 +84,11 @@ const CustomInput: FC<CustomProps & TextInputProps> = ({
   return (
     <View style={{ marginVertical: marginVertical }}>
       <InputLayout
-        style={{
-          ...styles.container,
-          paddingLeft: startIcon ? 40 : 10,
-        }}
+        style={[
+          styles.container,
+          { paddingLeft: startIcon ? 40 : 10 },
+          inputContainerStyle,
+        ]}
         isPicker={isPicker}
         onOpenPicker={onOpenPicker}
         disabled={disabled}

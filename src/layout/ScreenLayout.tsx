@@ -1,4 +1,3 @@
-import { Feather } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import React, { FC, ReactNode, useEffect, useState } from "react";
 import {
@@ -10,17 +9,11 @@ import {
   StyleSheet,
   Text,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-// import { useControlledRedirect } from "../hooks/useControlledRedirect";
-// import Camion from "../icons/Camion";
-// import Dashboard from "../icons/Dashboard";
-// import Logo from "../icons/Logo";
 import { footerTypes, screenTypes } from "../models/layout-models";
-// import { helperNavScreen } from "../redux/features/navhelp/navhelpTypes";
 import { colors } from "../theme/colors";
 import { fontStyles } from "../theme/fonts";
 
@@ -33,6 +26,7 @@ type Props = {
   showFooter?: boolean;
   footerType?: footerTypes;
   title?: string;
+  spaceBottom?: boolean;
 };
 type Main = {
   screenType?: screenTypes;
@@ -40,6 +34,7 @@ type Main = {
 
 export const ScreenLayout: FC<Props & Main> = (props) => {
   const {
+    spaceBottom = false,
     showFooter = false,
     footerType,
     screenType = screenTypes.view,
