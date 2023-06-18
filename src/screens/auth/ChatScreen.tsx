@@ -55,7 +55,7 @@ const { sxContainer, sxChatContainer, sxBtnChat } = StyleSheet.create({
   sxContainer: {
     flex: 1,
     backgroundColor: "transparent",
-    padding: 20,
+    paddingHorizontal: 20,
   },
   sxChatContainer: { flex: 1, backgroundColor: "#f2f2f2", borderRadius: 15 },
   sxBtnChat: { justifyContent: "center", paddingHorizontal: 10 },
