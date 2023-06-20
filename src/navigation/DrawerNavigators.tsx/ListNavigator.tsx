@@ -4,9 +4,8 @@ import {
 } from "@react-navigation/native-stack";
 import MenuIcon from "../../components/navigation/MenuIcon";
 import { drawerScreens } from "../../constants/screenNames";
-import MyChatsScreen from "../../screens/auth/MyChatsScreen";
 import { colors } from "../../theme/colors";
-import HomeScreen from "../../screens/auth/HomeScreen";
+import HomeScreen from "../../screens/main/HomeScreen";
 
 interface RootStackParamList {
   [key: string]: undefined; // Screen names

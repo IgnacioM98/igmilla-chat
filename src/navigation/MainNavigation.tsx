@@ -1,5 +1,4 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import MenuIcon from "../components/navigation/MenuIcon";
 import { drawerScreens } from "../constants/screenNames";
 import { colors } from "../theme/colors";
 import { fontStyles } from "../theme/fonts";
