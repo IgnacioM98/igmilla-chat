@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "igmilla-chat",
+    "name": "Igmilla Chat",
     "slug": "igmilla-chat",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,13 +14,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.igmilla.igmilla-chat"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/igmillachat-icon.png",
         "backgroundColor": "#5e4896"
-      }
+      },
+      "package": "com.igmilla.igmillachat"
     },
     "web": {
       "favicon": "./assets/favicon.png"

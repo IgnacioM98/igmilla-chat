@@ -14,6 +14,7 @@ const WelcomeScreen = (props: StackComponentProps) => {
     navigation.navigate(authScreens[name]);
 
   const onRegister = () => navigate("SignUpScreen");
+  const onRecover = () => navigate("RecoverScreen");
   const { values, setValue, errors, touched, onSubmit, state } = useLogin({});
 
   return (
@@ -50,6 +51,9 @@ const WelcomeScreen = (props: StackComponentProps) => {
             onPress={onRegister}
             variant="outlined"
           />
+          <Text onPress={onRecover} style={sxTextRecover}>
+            ¿Olvidaste tu contraseña?
+          </Text>
         </View>
       </View>
     </View>
@@ -58,24 +62,35 @@ const WelcomeScreen = (props: StackComponentProps) => {
 
 export default WelcomeScreen;
 
-const { sxContainer, sxContentContainer, sxText, sxBodyContent } =
-  StyleSheet.create({
-    sxContainer: {
-      flex: 1,
-      backgroundColor: "transparent",
-      paddingTop: "4%",
-    },
-    sxContentContainer: {
-      flex: 1,
-      paddingHorizontal: 20,
-      paddingBottom: "20%",
-      justifyContent: "space-around",
-    },
-    sxText: {
-      fontSize: 40,
-      marginVertical: "20%",
-      color: "#fff",
-      ...fontStyles.poppinsSemiBold,
-    },
-    sxBodyContent: { flex: 1, justifyContent: "center" },
-  });
+const {
+  sxContainer,
+  sxContentContainer,
+  sxText,
+  sxBodyContent,
+  sxTextRecover,
+} = StyleSheet.create({
+  sxContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    paddingTop: "4%",
+  },
+  sxContentContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: "20%",
+    justifyContent: "space-around",
+  },
+  sxText: {
+    fontSize: 40,
+    marginVertical: "20%",
+    color: "#fff",
+    ...fontStyles.poppinsSemiBold,
+  },
+  sxBodyContent: { flex: 1, justifyContent: "center" },
+  sxTextRecover: {
+    color: "#fff",
+    ...fontStyles.poppinsMedium,
+    alignSelf: "center",
+    marginVertical: 10,
+  },
+});

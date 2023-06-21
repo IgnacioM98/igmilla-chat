@@ -1,6 +1,7 @@
 export const authScreens = {
   WelcomeScreen: "Welcome Screen",
   SignUpScreen: "Sign Up Screen",
+  RecoverScreen: "Recover Screen",
 };
 
 export const drawerScreens = {
