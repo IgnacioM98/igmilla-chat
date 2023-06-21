@@ -28,6 +28,12 @@
           <string>com.igmilla.igmilla-chat</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.889642020752-lil888qv10u63imifq7uroeemta4v58o</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>

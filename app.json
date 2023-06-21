@@ -15,17 +15,30 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.igmilla.igmilla-chat"
+      "bundleIdentifier": "com.igmilla.igmilla-chat",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/igmillachat-icon.png",
         "backgroundColor": "#5e4896"
       },
-      "package": "com.igmilla.igmillachat"
+      "package": "com.igmilla.igmillachat",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }
