@@ -4,6 +4,7 @@ import { colors } from "../theme/colors";
 import { fontStyles } from "../theme/fonts";
 import { HomeStack } from "./DrawerNavigators.tsx/HomeNavigator";
 import { ListStack } from "./DrawerNavigators.tsx/ListNavigator";
+import CustomDrawer from "../components/navigation/CustomDrawer";
 
 const Drawer = createDrawerNavigator();
 
@@ -21,6 +22,7 @@ export function MainDrawer() {
           ...fontStyles.poppinsMedium,
         },
       }}
+      drawerContent={CustomDrawer}
     >
       <Drawer.Screen
         options={{

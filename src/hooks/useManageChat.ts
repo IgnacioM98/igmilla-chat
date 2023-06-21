@@ -17,6 +17,7 @@ export interface Props {
 
 export const useManageChat = ({ reditect }: Props) => {
   const [shouldRedirect, setRedirect] = useState(false);
+  const [chats, setChats] = useState<any[]>([]);
   const selectChat = (chat: any) => {
     setRedirect(true);
   };
@@ -28,5 +29,5 @@ export const useManageChat = ({ reditect }: Props) => {
     }
   }, [shouldRedirect]);
 
-  return { selectChat };
+  return { selectChat, chats };
 };

@@ -17,7 +17,7 @@ interface ButtonProps {
   containerStyles?: StyleProp<ViewStyle>;
   textStyles?: StyleProp<TextStyle>;
   iconColor?: string;
-  text: string;
+  text?: string;
   onPress: VoidFunction;
   variant?: "outlined" | "contained";
   hideIcon?: boolean;
@@ -29,7 +29,7 @@ const SimpleButton: FC<ButtonProps> = (props) => {
     containerStyles,
     textStyles,
     iconColor = "#fff",
-    text,
+    text = "",
     onPress,
     variant = "contained",
     hideIcon = false,
