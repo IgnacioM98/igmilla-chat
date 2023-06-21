@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { TypedUseSelectorHook } from "react-redux/es/types";
 import authReducer from "../features/auth/authSlice";
+import chatReducer from "../features/chat/chatSlice";
 
 const configureAppStore = () => {
   const store = configureStore({
     reducer: {
       auth: authReducer,
+      chat: chatReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

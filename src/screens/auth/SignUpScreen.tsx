@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import SimpleButton from "../../components/SimpleButton";
-import { authScreens } from "../../constants/screenNames";
 import { useSignUp } from "../../hooks/auth/useSignUp";
 import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { fontStyles } from "../../theme/fonts";
@@ -10,16 +9,24 @@ import { fontStyles } from "../../theme/fonts";
 const SignUpScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
 
-  const navigate = (name: keyof typeof authScreens) =>
-    navigation.navigate(authScreens[name]);
+  // const navigate = (name: keyof typeof authScreens) =>
+  //   navigation.navigate(authScreens[name]);
 
-  const onRegister = () => navigate("SignUpScreen");
-  const { values, setValue, errors, touched, onSubmit } = useSignUp({});
+  const { values, setValue, errors, touched, onSubmit, state } = useSignUp({});
 
   return (
     <View style={sxContainer}>
       <View style={sxContentContainer}>
         <View style={sxBodyContent}>
+          <CustomInput
+            label="Nombre"
+            value={values.nombre}
+            onChangeText={(txt) => setValue("nombre", txt)}
+            errorText={errors.nombre && errors.nombre}
+            error={touched.nombre && Boolean(errors.nombre)}
+            marginVertical={10}
+            disabled={state === "submit"}
+          />
           <CustomInput
             label="Email"
             value={values.email}
@@ -29,24 +36,25 @@ const SignUpScreen = (props: StackComponentProps) => {
             errorText={errors.email && errors.email}
             error={touched.email && Boolean(errors.email)}
             marginVertical={10}
-            // disabled={loginState === "submit"}
+            disabled={state === "submit"}
           />
           <CustomInput
             label="Contraseña"
             value={values.pass}
             onChangeText={(txt) => setValue("pass", txt)}
-            // secureTextEntry
+            secureTextEntry
             autoCapitalize="none"
             errorText={errors.pass && errors.pass}
             error={touched.pass && Boolean(errors.pass)}
             marginVertical={10}
-            // disabled={loginState === "submit"}
-            hidePassEye
+            disabled={state === "submit"}
           />
           <SimpleButton
             text="Registrarse"
             onPress={onSubmit}
             variant="outlined"
+            disabled={state === "submit"}
+            isLoading={state === "submit"}
             hideIcon
           />
         </View>

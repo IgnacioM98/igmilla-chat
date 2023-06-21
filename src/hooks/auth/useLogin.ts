@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useAppDispatch, useAppSelector } from "../../redux/store/store";
-import { authSelector } from "../../redux/features/auth/authSlice";
 import { validateUser } from "../../redux/features/auth/authActions";
+import { authSelector } from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store/store";
 
 export interface Props {}
 
@@ -11,15 +11,12 @@ export const useLogin = ({}: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const validate = (credentials: any) => {
-    dispatch(validateUser());
-  };
   const { values, handleSubmit, setFieldValue, errors, touched } = useFormik({
     initialValues: {
       email: "",
       pass: "",
     },
-    onSubmit: (values) => validate(values),
+    onSubmit: (values) => dispatch(validateUser(values)),
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: Yup.object().shape({

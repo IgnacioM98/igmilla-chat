@@ -12,7 +12,7 @@ export const useRecover = ({}: Props) => {
   const dispatch = useAppDispatch();
 
   const validate = (credentials: any) => {
-    dispatch(createUser());
+    // dispatch(createUser());
   };
   const { values, handleSubmit, setFieldValue, errors, touched } = useFormik({
     initialValues: {

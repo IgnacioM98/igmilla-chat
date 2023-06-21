@@ -10,17 +10,17 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-// import { validateAppUser } from "../redux/features/auth/authActions";
-// import { useAppDispatch } from "../redux/store/store";
+import { validateUser } from "../redux/features/auth/authActions";
+import { useAppDispatch } from "../redux/store/store";
 
 SplashScreen.preventAutoHideAsync();
 
 export interface Props {}
 
 export const useAppInit = ({}: Props) => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-  const [credsLoad, setCredLoaded] = useState(true); // should be false
+  const [credsLoad, setCredLoaded] = useState(false); // should be false
   const [fontLoaded] = useFonts({
     Poppins_300Light,
     Poppins_400Regular,
@@ -35,7 +35,7 @@ export const useAppInit = ({}: Props) => {
       const res = await AsyncStorage.getItem("@credentials");
       if (res) {
         const credentials = JSON.parse(res);
-        // dispatch(validateAppUser(credentials));
+        dispatch(validateUser(credentials));
       }
       setCredLoaded(true);
     }

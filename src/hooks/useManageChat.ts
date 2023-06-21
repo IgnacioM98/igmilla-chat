@@ -10,18 +10,37 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../redux/store/store";
+import { getAvailableUsers } from "../redux/features/chat/chatActions";
+import { chatSelector } from "../redux/features/chat/chatSlice";
 
 export interface Props {
   reditect?: VoidFunction;
 }
 
 export const useManageChat = ({ reditect }: Props) => {
+  const dispatch = useAppDispatch();
   const [shouldRedirect, setRedirect] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [cleanSearch, setClean] = useState(false);
   const [chats, setChats] = useState<any[]>([]);
+
+  const { usersList, usersState } = useAppSelector(chatSelector);
+
   const selectChat = (chat: any) => {
-    setRedirect(true);
+    // setRedirect(true);
   };
 
+  const getUsers = () => {
+    setClean(false);
+    dispatch(getAvailableUsers());
+  };
+  const searchUsers = () => {
+    const text = searchText;
+    setSearchText("");
+    setClean(true);
+    dispatch(getAvailableUsers(text));
+  };
   useEffect(() => {
     if (shouldRedirect && reditect) {
       setRedirect(false);
@@ -29,5 +48,15 @@ export const useManageChat = ({ reditect }: Props) => {
     }
   }, [shouldRedirect]);
 
-  return { selectChat, chats };
+  return {
+    getUsers,
+    selectChat,
+    chats,
+    searchText,
+    setSearchText,
+    usersList,
+    searchUsers,
+    cleanSearch,
+    usersState
+  };
 };

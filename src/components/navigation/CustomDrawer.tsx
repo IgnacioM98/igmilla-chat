@@ -4,20 +4,23 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { StyleSheet, View, ViewStyle, Image, Text } from "react-native";
+import { Image, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAppDispatch } from "../../redux/store/store";
+import { logoutUser } from "../../redux/features/auth/authActions";
+import { authSelector } from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store/store";
 import { fontStyles } from "../../theme/fonts";
-import { setAuthentication } from "../../redux/features/auth/authActions";
 
 export default function CustomDrawer(props: DrawerContentComponentProps) {
   const { navigation, ...other } = props;
   const { top, bottom } = useSafeAreaInsets();
 
+  const { user } = useAppSelector(authSelector);
+
   const dispatch = useAppDispatch();
 
   const endSession = () => {
-    dispatch(setAuthentication("Unauthenticated"));
+    dispatch(logoutUser());
   };
 
   return (
@@ -31,7 +34,7 @@ export default function CustomDrawer(props: DrawerContentComponentProps) {
           style={sxIcon}
         />
       </View>
-      <Text style={sxUserTitle}>{`Bienvenido(a):\nUsuario`}</Text>
+      <Text style={sxUserTitle}>{`Bienvenido(a):\n${user?.nombre}`}</Text>
       <DrawerItemList {...props} />
       <View style={sxBottomLabelContainer(bottom)}>
         <DrawerItem

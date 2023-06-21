@@ -45,7 +45,12 @@ const WelcomeScreen = (props: StackComponentProps) => {
             disabled={state === "submit"}
             hidePassEye
           />
-          <SimpleButton text="Ingresar" onPress={onSubmit} />
+          <SimpleButton
+            text="Ingresar"
+            onPress={onSubmit}
+            disabled={state === "submit"}
+            isLoading={state === "submit"}
+          />
           <SimpleButton
             text="Regístrate aquí"
             onPress={onRegister}

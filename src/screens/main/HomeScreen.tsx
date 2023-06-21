@@ -1,7 +1,8 @@
 import { FontAwesome } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +15,9 @@ import { ScreenLayout } from "../../layout/ScreenLayout";
 import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { colors } from "../../theme/colors";
 import { fontStyles } from "../../theme/fonts";
+import { useManageChat } from "../../hooks/useManageChat";
+import { useFocusEffect } from "@react-navigation/native";
+import { UserDb } from "../../models/usuario";
 
 const HomeScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
@@ -23,7 +27,29 @@ const HomeScreen = (props: StackComponentProps) => {
 
   const goChat = () => navigate("ChatScreen");
 
-  const [txt, setTxt] = useState("");
+  const {
+    searchText,
+    setSearchText,
+    getUsers,
+    searchUsers,
+    usersList,
+    cleanSearch,
+    usersState,
+  } = useManageChat({});
+
+  useFocusEffect(
+    useCallback(() => {
+      getUsers();
+    }, [])
+  );
+
+  const pressSearch = () => {
+    if (cleanSearch) {
+      getUsers();
+    } else {
+      searchUsers();
+    }
+  };
 
   return (
     <ScreenLayout title="Chatea Ahora!">
@@ -31,21 +57,37 @@ const HomeScreen = (props: StackComponentProps) => {
         <View style={{ marginBottom: 30 }}>
           <TextInput
             style={sxTextInput}
-            value={txt}
+            value={searchText}
             blurOnSubmit
-            onChangeText={setTxt}
+            onChangeText={setSearchText}
             autoComplete="off"
             autoFocus={false}
             selectTextOnFocus
             returnKeyType="done"
           />
-          <TouchableOpacity style={sxIconSearch}>
-            <FontAwesome name="search" size={24} color={colors.BLACK_PURPLE} />
+          <TouchableOpacity style={sxIconSearch} onPress={pressSearch}>
+            {cleanSearch && !searchText ? (
+              <FontAwesome name="close" size={24} color={colors.BLACK_PURPLE} />
+            ) : (
+              <FontAwesome
+                name="search"
+                size={24}
+                color={colors.BLACK_PURPLE}
+              />
+            )}
           </TouchableOpacity>
         </View>
         <FlatList
-          data={["", "", "", "", ""]}
-          renderItem={({ item }) => <ListItem selectChat={goChat} />}
+          data={usersList}
+          renderItem={({ item }) => (
+            <ListItem item={item} selectChat={goChat} />
+          )}
+          refreshControl={
+            <RefreshControl
+              refreshing={usersState === "submit"}
+              onRefresh={getUsers}
+            />
+          }
           keyExtractor={(_, i) => i.toString()}
         />
       </View>
@@ -56,16 +98,17 @@ const HomeScreen = (props: StackComponentProps) => {
 export default HomeScreen;
 
 interface ItemProps {
+  item: UserDb;
   selectChat: (chat: any) => void;
 }
 
 const ListItem = (props: ItemProps) => {
-  const { selectChat, ...others } = props;
+  const { selectChat, item, ...others } = props;
   const select = () => selectChat({});
   return (
     <View style={sxItemContainer}>
       <View style={{ flex: 1, padding: 10, justifyContent: "center" }}>
-        <Text style={sxItemTitle}>Peter Parker</Text>
+        <Text style={sxItemTitle}>{item._nombre}</Text>
       </View>
       <SimpleButton
         onPress={select}

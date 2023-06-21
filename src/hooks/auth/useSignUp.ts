@@ -1,8 +1,12 @@
 import { useFormik } from "formik";
+import { useEffect } from "react";
 import * as Yup from "yup";
-import { useAppDispatch, useAppSelector } from "../../redux/store/store";
+import {
+  createUser,
+  validateUser,
+} from "../../redux/features/auth/authActions";
 import { authSelector } from "../../redux/features/auth/authSlice";
-import { createUser } from "../../redux/features/auth/authActions";
+import { useAppDispatch, useAppSelector } from "../../redux/store/store";
 
 export interface Props {}
 
@@ -11,18 +15,17 @@ export const useSignUp = ({}: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const validate = (credentials: any) => {
-    dispatch(createUser());
-  };
   const { values, handleSubmit, setFieldValue, errors, touched } = useFormik({
     initialValues: {
+      nombre: "",
       email: "",
       pass: "",
     },
-    onSubmit: (values) => validate(values),
+    onSubmit: (values) => dispatch(createUser(values)),
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: Yup.object().shape({
+      nombre: Yup.string().required("Nombre requerido"),
       email: Yup.string()
         .email("Ingrese email inválido")
         .max(255)
@@ -33,6 +36,12 @@ export const useSignUp = ({}: Props) => {
         .required("Contraseña es requerida"),
     }),
   });
+
+  useEffect(() => {
+    if (signUpState === "success") {
+      dispatch(validateUser(values));
+    }
+  }, [signUpState]);
 
   return {
     values,
