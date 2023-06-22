@@ -35,6 +35,7 @@ const HomeScreen = (props: StackComponentProps) => {
     usersList,
     cleanSearch,
     usersState,
+    createChat,
   } = useManageChat({});
 
   useFocusEffect(
@@ -80,7 +81,7 @@ const HomeScreen = (props: StackComponentProps) => {
         <FlatList
           data={usersList}
           renderItem={({ item }) => (
-            <ListItem item={item} selectChat={goChat} />
+            <ListItem item={item} selectChat={createChat} />
           )}
           refreshControl={
             <RefreshControl
@@ -99,12 +100,12 @@ export default HomeScreen;
 
 interface ItemProps {
   item: UserDb;
-  selectChat: (chat: any) => void;
+  selectChat: (usr: UserDb) => void;
 }
 
 const ListItem = (props: ItemProps) => {
   const { selectChat, item, ...others } = props;
-  const select = () => selectChat({});
+  const select = () => selectChat(item);
   return (
     <View style={sxItemContainer}>
       <View style={{ flex: 1, padding: 10, justifyContent: "center" }}>

@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -16,6 +16,8 @@ import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { colors } from "../../theme/colors";
 import { fontStyles } from "../../theme/fonts";
 import { formatDate } from "../../utils/utils";
+import { useFocusEffect } from "@react-navigation/native";
+import { useManageChat } from "../../hooks/useManageChat";
 
 const ChatScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
@@ -24,6 +26,14 @@ const ChatScreen = (props: StackComponentProps) => {
   const navigate = (name: keyof typeof authScreens) =>
     navigation.navigate(authScreens[name]);
   const [txt, setTxt] = useState("");
+
+  const { endChat } = useManageChat({});
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => endChat();
+    }, [])
+  );
 
   return (
     <ScreenLayout>
@@ -146,7 +156,7 @@ const {
     padding: 15,
     fontSize: 16,
     textAlignVertical: "center",
-    paddingTop:15,
+    paddingTop: 15,
     color: colors.BLACK_BLACK,
     fontFamily: fontStyles.poppinsMedium.fontFamily,
   },

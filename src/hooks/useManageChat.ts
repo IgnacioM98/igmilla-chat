@@ -1,18 +1,17 @@
-import {
-  Poppins_300Light,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  Poppins_600SemiBold_Italic,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/store/store";
-import { getAvailableUsers } from "../redux/features/chat/chatActions";
+import { Session } from "../models/session";
+import { UserDb } from "../models/usuario";
+import { authSelector } from "../redux/features/auth/authSlice";
+import {
+  closeConversation,
+  getAvailableSessions,
+  getAvailableUsers,
+  openConversation,
+  openSessionConversation,
+  setSessionSelected,
+} from "../redux/features/chat/chatActions";
 import { chatSelector } from "../redux/features/chat/chatSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store/store";
 
 export interface Props {
   reditect?: VoidFunction;
@@ -20,16 +19,33 @@ export interface Props {
 
 export const useManageChat = ({ reditect }: Props) => {
   const dispatch = useAppDispatch();
-  const [shouldRedirect, setRedirect] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [cleanSearch, setClean] = useState(false);
-  const [chats, setChats] = useState<any[]>([]);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  const { usersList, usersState } = useAppSelector(chatSelector);
+  const { user } = useAppSelector(authSelector);
+  const {
+    usersList,
+    usersState,
+    sessionsList,
+    sessionsState,
+    selectedSession,
+    activeChat,
+  } = useAppSelector(chatSelector);
 
-  const selectChat = (chat: any) => {
+  const selectChat = (chat: Session) => {
+    // console.log(chat);
+    dispatch(setSessionSelected(chat));
+  };
+  const createChat = (usr: UserDb) => {
+    if (!user) return;
+    dispatch(openSessionConversation({ participante: usr, usuario: user }));
     // setRedirect(true);
   };
+  const endChat = () =>
+    selectedSession && dispatch(closeConversation(selectedSession));
+
+  const getSessions = () => dispatch(getAvailableSessions());
 
   const getUsers = () => {
     setClean(false);
@@ -41,22 +57,36 @@ export const useManageChat = ({ reditect }: Props) => {
     setClean(true);
     dispatch(getAvailableUsers(text));
   };
+
   useEffect(() => {
-    if (shouldRedirect && reditect) {
-      setRedirect(false);
+    if (selectedSession) {
+      setShouldRedirect(true);
+    }
+  }, [selectedSession]);
+
+  useEffect(() => {
+    if (activeChat && reditect && shouldRedirect) {
+      setShouldRedirect(true);
+      console.log("waaa");
+
       reditect();
     }
-  }, [shouldRedirect]);
+  }, [activeChat, shouldRedirect]);
 
   return {
     getUsers,
     selectChat,
-    chats,
     searchText,
     setSearchText,
     usersList,
     searchUsers,
     cleanSearch,
-    usersState
+    usersState,
+    user,
+    getSessions,
+    sessionsState,
+    createChat,
+    sessionsList,
+    endChat,
   };
 };

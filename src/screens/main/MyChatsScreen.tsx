@@ -1,11 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
+  RefreshControl,
 } from "react-native";
 import { drawerScreens } from "../../constants/screenNames";
 import { useManageChat } from "../../hooks/useManageChat";
@@ -14,6 +15,9 @@ import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { colors } from "../../theme/colors";
 import { fontStyles } from "../../theme/fonts";
 import { formatDateTXT } from "../../utils/utils";
+import { Session } from "../../models/session";
+import { UserDb } from "../../models/usuario";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MyChatsScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
@@ -24,15 +28,32 @@ const MyChatsScreen = (props: StackComponentProps) => {
   const goChat = () => navigate("ChatScreen");
   const goSearch = () => navigate("ListNavigator");
 
-  const { selectChat, chats } = useManageChat({ reditect: goChat });
+  const { selectChat, user, getSessions, sessionsState, sessionsList } =
+    useManageChat({
+      reditect: goChat,
+    });
+
+  useFocusEffect(
+    useCallback(() => {
+      getSessions();
+    }, [])
+  );
 
   return (
     <ScreenLayout title="Chats Activos">
       <View style={sxContainer}>
-        {chats.length === 0 && <EmptyCard onPress={goSearch} />}
+        {sessionsList.length === 0 && <EmptyCard onPress={goSearch} />}
         <FlatList
-          data={chats}
-          renderItem={({ item }) => <ListItem selectChat={selectChat} />}
+          data={sessionsList}
+          renderItem={({ item }) => (
+            <ListItem item={item} selectChat={selectChat} user={user!} />
+          )}
+          refreshControl={
+            <RefreshControl
+              refreshing={sessionsState === "submit"}
+              onRefresh={getSessions}
+            />
+          }
           keyExtractor={(_, i) => i.toString()}
         />
       </View>
@@ -43,18 +64,28 @@ const MyChatsScreen = (props: StackComponentProps) => {
 export default MyChatsScreen;
 
 interface ItemProps {
-  selectChat: (chat: any) => void;
+  item: Session;
+  selectChat: (chat: Session) => void;
+  user: UserDb;
 }
 
 const ListItem = (props: ItemProps) => {
-  const { selectChat, ...others } = props;
-  const select = () => selectChat({});
-  const date = new Date();
+  const { selectChat, item, user, ...others } = props;
+  const select = () => selectChat(item);
+  const participantes = item.participantes;
+
   return (
     <View style={sxItemContainer}>
       <View style={{ flex: 1, padding: 10, justifyContent: "center" }}>
-        <Text style={sxItemTitle}>No tienes Chats Activos</Text>
-        <Text style={sxItemSubtitle}>Última vez: {formatDateTXT(date)}</Text>
+        <Text style={sxItemTitle}>
+          {String(participantes.find((p) => p !== user)?.nombre || "")}
+        </Text>
+        <Text style={sxItemSubtitle}>
+          Última vez:{" "}
+          {item.ultimaConversacion
+            ? formatDateTXT(item.ultimaConversacion.toDate())
+            : " - "}
+        </Text>
       </View>
       <TouchableOpacity style={sxItemIcon} onPress={select}>
         <Ionicons name="chatbubble" size={35} color={colors.PINK} />
