@@ -89,16 +89,23 @@ export const openSessionConversation = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      const res = await SESSIONS.where("participantes", "array-contains-any", [
+      const resA = await SESSIONS.where("participantes", "==", [
         participante,
         usuario,
       ]).get();
+      const resB = await SESSIONS.where("participantes", "==", [
+        usuario,
+        participante,
+      ]).get();
+      const countA = resA.docs.length;
+      const countB = resB.docs.length;
 
-      if (res.docs.length > 0) {
+      if (countA > 0 || countB > 0) {
+        const foundedSession = countA > 0 ? resA.docs[0] : resB.docs[0];
         const session = {
-          id: res.docs[0].id,
-          _ref: res.docs[0].ref,
-          ...res.docs[0].data(),
+          id: foundedSession.id,
+          _ref: foundedSession.ref,
+          ...foundedSession.data(),
         } as Session;
         dispatch(setSessionSelected({ ...session } as any));
       } else {
