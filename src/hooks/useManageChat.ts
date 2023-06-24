@@ -8,6 +8,8 @@ import {
   getAvailableUsers,
   openConversation,
   openSessionConversation,
+  sendChatMessage,
+  setChatActive,
   setSessionSelected,
 } from "../redux/features/chat/chatActions";
 import { chatSelector } from "../redux/features/chat/chatSlice";
@@ -15,13 +17,16 @@ import { useAppDispatch, useAppSelector } from "../redux/store/store";
 
 export interface Props {
   reditect?: VoidFunction;
+  isChat?: boolean;
 }
 
-export const useManageChat = ({ reditect }: Props) => {
+export const useManageChat = ({ reditect, isChat }: Props) => {
   const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState("");
   const [cleanSearch, setClean] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [listenSession, setListenSession] = useState(false);
+  const [messageText, setMessageText] = useState("");
 
   const { user } = useAppSelector(authSelector);
   const {
@@ -31,19 +36,24 @@ export const useManageChat = ({ reditect }: Props) => {
     sessionsState,
     selectedSession,
     activeChat,
+    chatsList,
   } = useAppSelector(chatSelector);
 
   const selectChat = (chat: Session) => {
-    // console.log(chat);
+    setListenSession(true);
     dispatch(setSessionSelected(chat));
   };
   const createChat = (usr: UserDb) => {
     if (!user) return;
+    setListenSession(true);
     dispatch(openSessionConversation({ participante: usr, usuario: user }));
-    // setRedirect(true);
   };
-  const endChat = () =>
-    selectedSession && dispatch(closeConversation(selectedSession));
+  const endChat = () => {
+    if (selectedSession && user)
+      dispatch(
+        closeConversation({ activeSession: selectedSession, user: user._ref })
+      );
+  };
 
   const getSessions = () => dispatch(getAvailableSessions());
 
@@ -58,20 +68,41 @@ export const useManageChat = ({ reditect }: Props) => {
     dispatch(getAvailableUsers(text));
   };
 
+  const sendMessage = () => {
+    if (activeChat && user)
+      dispatch(
+        sendChatMessage({
+          message: messageText,
+          activeChat: activeChat._ref,
+          userId: user.id,
+        })
+      );
+  };
+
   useEffect(() => {
-    if (selectedSession) {
+    if (selectedSession && user && !activeChat && listenSession) {
+      dispatch(setChatActive(null));
+      setListenSession(false);
       setShouldRedirect(true);
+      // should open session messages
+      console.log("dispatch open conversation");
+      dispatch(openConversation({ session: selectedSession, user: user._ref }));
     }
   }, [selectedSession]);
 
   useEffect(() => {
     if (activeChat && reditect && shouldRedirect) {
-      setShouldRedirect(true);
-      console.log("waaa");
-
+      setShouldRedirect(false);
+      console.log("redirect to chat");
       reditect();
     }
   }, [activeChat, shouldRedirect]);
+
+  useEffect(() => {
+    if (activeChat && isChat) {
+      setMessageText("");
+    }
+  }, [isChat, activeChat]);
 
   return {
     getUsers,
@@ -88,5 +119,10 @@ export const useManageChat = ({ reditect }: Props) => {
     createChat,
     sessionsList,
     endChat,
+    chatsList,
+    messageText,
+    setMessageText,
+    sendMessage,
+    activeChat,
   };
 };

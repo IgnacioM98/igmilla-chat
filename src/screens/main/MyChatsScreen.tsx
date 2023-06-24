@@ -1,23 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback } from "react";
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  RefreshControl,
 } from "react-native";
 import { drawerScreens } from "../../constants/screenNames";
 import { useManageChat } from "../../hooks/useManageChat";
 import { ScreenLayout } from "../../layout/ScreenLayout";
+import { Session } from "../../models/session";
 import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { colors } from "../../theme/colors";
 import { fontStyles } from "../../theme/fonts";
 import { formatDateTXT } from "../../utils/utils";
-import { Session } from "../../models/session";
-import { UserDb } from "../../models/usuario";
-import { useFocusEffect } from "@react-navigation/native";
 
 const MyChatsScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
@@ -46,7 +45,7 @@ const MyChatsScreen = (props: StackComponentProps) => {
         <FlatList
           data={sessionsList}
           renderItem={({ item }) => (
-            <ListItem item={item} selectChat={selectChat} user={user!} />
+            <ListItem item={item} selectChat={selectChat} userId={user?.id} />
           )}
           refreshControl={
             <RefreshControl
@@ -66,11 +65,11 @@ export default MyChatsScreen;
 interface ItemProps {
   item: Session;
   selectChat: (chat: Session) => void;
-  user: UserDb;
+  userId?: string;
 }
 
 const ListItem = (props: ItemProps) => {
-  const { selectChat, item, user, ...others } = props;
+  const { selectChat, item, userId = "", ...others } = props;
   const select = () => selectChat(item);
   const participantes = item.participantes;
 
@@ -78,7 +77,7 @@ const ListItem = (props: ItemProps) => {
     <View style={sxItemContainer}>
       <View style={{ flex: 1, padding: 10, justifyContent: "center" }}>
         <Text style={sxItemTitle}>
-          {String(participantes.find((p) => p !== user)?.nombre || "")}
+          {String(participantes.find((p) => p.id !== userId)?.nombre || "")}
         </Text>
         <Text style={sxItemSubtitle}>
           Última vez:{" "}

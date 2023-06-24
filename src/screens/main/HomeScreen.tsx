@@ -36,7 +36,7 @@ const HomeScreen = (props: StackComponentProps) => {
     cleanSearch,
     usersState,
     createChat,
-  } = useManageChat({});
+  } = useManageChat({ reditect: goChat });
 
   useFocusEffect(
     useCallback(() => {

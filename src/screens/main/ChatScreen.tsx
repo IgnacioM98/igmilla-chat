@@ -15,9 +15,10 @@ import { ScreenLayout } from "../../layout/ScreenLayout";
 import { StackComponentProps } from "../../navigation/AuthNavigator";
 import { colors } from "../../theme/colors";
 import { fontStyles } from "../../theme/fonts";
-import { formatDate } from "../../utils/utils";
+import { formatDate, formatTime } from "../../utils/utils";
 import { useFocusEffect } from "@react-navigation/native";
 import { useManageChat } from "../../hooks/useManageChat";
+import { Conversation } from "../../models/conversation";
 
 const ChatScreen = (props: StackComponentProps) => {
   const { navigation, ...others } = props;
@@ -25,9 +26,18 @@ const ChatScreen = (props: StackComponentProps) => {
 
   const navigate = (name: keyof typeof authScreens) =>
     navigation.navigate(authScreens[name]);
-  const [txt, setTxt] = useState("");
 
-  const { endChat } = useManageChat({});
+  const {
+    endChat,
+    chatsList,
+    messageText,
+    setMessageText,
+    activeChat,
+    sendMessage,
+    user,
+  } = useManageChat({
+    isChat: true,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -39,10 +49,10 @@ const ChatScreen = (props: StackComponentProps) => {
     <ScreenLayout>
       <View style={[sxContainer, { paddingBottom: bottom }]}>
         <FlatList
-          data={["", "", "", "", "", ""]}
+          data={activeChat ? [activeChat, ...chatsList] : []}
           style={sxChatContainer}
           contentContainerStyle={{ paddingVertical: 20 }}
-          renderItem={({ item }) => <ListItem item={item} />}
+          renderItem={({ item }) => <ListItem item={item} userId={user?.id} />}
           keyExtractor={(_, i) => i.toString()}
           inverted
           showsVerticalScrollIndicator={false}
@@ -51,14 +61,14 @@ const ChatScreen = (props: StackComponentProps) => {
           <View style={{ flex: 1 }}>
             <TextInput
               style={sxTextInput}
-              value={txt}
+              value={messageText}
               blurOnSubmit
-              onChangeText={setTxt}
+              onChangeText={setMessageText}
               autoComplete="off"
               multiline
             />
           </View>
-          <TouchableOpacity style={sxBtnChat}>
+          <TouchableOpacity style={sxBtnChat} onPress={sendMessage}>
             <MaterialCommunityIcons
               name="send-circle"
               size={40}
@@ -74,47 +84,29 @@ const ChatScreen = (props: StackComponentProps) => {
 export default ChatScreen;
 
 interface ItemProps {
-  item: any;
+  item: Conversation;
+  userId?: string;
 }
 
 const ListItem = (props: ItemProps) => {
-  const { item, ...others } = props;
-  const date = new Date();
-  const someArray = [
-    { Title: "", origin: "a", message: "asldkaskldjaslkdjaslkdjalskjd" },
-    {
-      Title: "",
-      origin: "a",
-      message: "asldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjd",
-    },
-    {
-      Title: "",
-      origin: "b",
-      message:
-        "asldkaskldjasasldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjdlkdjaslkdjalskjd",
-    },
-    {
-      Title: "",
-      origin: "a",
-      message:
-        "asldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjdasldkaskldjaslkdjaslkdjalskjd",
-    },
-    { Title: "", origin: "a", message: "asldkaskldjaslkdjaslkdjalskjd" },
-    { Title: "", origin: "a", message: "asldkaskldjaslkdj" },
-  ];
+  const { item, userId = "", ...others } = props;
+
   return (
     <View style={sxChatSession}>
       <View style={{ flex: 1, paddingHorizontal: 20 }}>
         <View style={sxSessionDateContainer}>
           <View style={sxSessionDateLine} />
-          <Text style={sxSessionDateItem}>{formatDate(date)}</Text>
+          <Text style={sxSessionDateItem}>
+            {formatDate(item.fechaCreacion.toDate())} -{" "}
+            {formatTime(item.fechaCreacion.toDate())}
+          </Text>
           <View style={sxSessionDateLine} />
         </View>
-        {someArray.map((item, i) => (
-          <View key={i} style={sxChatBubbleContainer(item.origin === "b")}>
-            <View style={item.origin === "b" ? sxBubbleB : sxBubbleA}>
+        {item.mensajes.map((m, i) => (
+          <View key={i} style={sxChatBubbleContainer(m.idUsuario === userId)}>
+            <View style={m.idUsuario === userId ? sxBubbleB : sxBubbleA}>
               <Text style={{ ...fontStyles.poppinsRegular, color: "#fff" }}>
-                {item.message}
+                {m.texto}
               </Text>
             </View>
           </View>
