@@ -27,6 +27,7 @@ type Props = {
   footerType?: footerTypes;
   title?: string;
   spaceBottom?: boolean;
+  bgColor?: string;
 };
 type Main = {
   screenType?: screenTypes;
@@ -38,6 +39,7 @@ export const ScreenLayout: FC<Props & Main> = (props) => {
     showFooter = false,
     footerType,
     screenType = screenTypes.view,
+    bgColor = "#fff",
   } = props;
   const headerHeight = useHeaderHeight();
   const { top, bottom } = useSafeAreaInsets();
@@ -48,7 +50,7 @@ export const ScreenLayout: FC<Props & Main> = (props) => {
         android: top,
         ios: headerHeight,
       })}
-      style={stylesFunc.container(showFooter ? 0 : bottom)}
+      style={stylesFunc.container(showFooter ? 0 : bottom, bgColor)}
       behavior={Platform.select({ android: undefined, ios: "padding" })}
       enabled
     >
@@ -256,11 +258,11 @@ const styles = StyleSheet.create({
 });
 
 const stylesFunc = {
-  container: (bottom: number): ViewStyle => ({
+  container: (bottom: number, bgColor: string): ViewStyle => ({
     flex: 1,
     paddingBottom: bottom,
     paddingTop: 15,
-    backgroundColor: "#fff",
+    backgroundColor: bgColor,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginTop: Platform.select({ ios: 5, android: 5 }),

@@ -104,7 +104,7 @@ const CustomInput: FC<CustomProps & TextInputProps> = ({
             }),
             fontSize: animatedFocused?.interpolate({
               inputRange: [0, 1],
-              outputRange: [16, 12],
+              outputRange: [15, 11],
             }),
             // color: animatedFocused?.interpolate({
             //   inputRange: [0, 1],
